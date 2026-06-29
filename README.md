@@ -9,14 +9,23 @@ Built with Python and watchdog as part of an adaptive file organization pipeline
 ## Project Structure
 
 AdaptiveFS/
+
 ├── adaptivefs-env/       ← virtual environment (not committed to Git)
+
 ├── test_folder/          ← folder used for local testing
+
 ├── watcher.py            ← basic event printer
+
 ├── watcher_logger.py     ← logs events to CSV with timestamps
+
 ├── events_log.csv        ← generated log file (auto-created on run)
+
 ├── findings.md           ← Phase 1 observations and notes
+
 ├── requirements.txt      ← Python dependencies
+
 ├── .gitignore
+
 └── README.md
 
 ---
