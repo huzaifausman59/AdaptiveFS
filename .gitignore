@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+adaptivefs-env/
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# Logs
+*.log
+*.csv
+
+# OS files
+.DS_Store
+Thumbs.db
