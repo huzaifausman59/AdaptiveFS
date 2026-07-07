@@ -2,14 +2,20 @@ import sys
 import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from sort import sort_file
 
 
 class AdaptiveFSHandler(FileSystemEventHandler):
     """Handles file system events and prints them to the terminal."""
 
+    def __init__(self, base_dir):
+        super().__init__()
+        self.base_dir = base_dir
+
     def on_created(self, event):
         if not event.is_directory:
             print(f"[CREATED]   {event.src_path}")
+            sort_file(event.src_path, self.base_dir)
 
     def on_modified(self, event):
         if not event.is_directory:
@@ -28,7 +34,7 @@ def watch_folder(path_to_watch):
     print(f"Watching folder: {path_to_watch}")
     print("Press Ctrl+C to stop.\n")
 
-    event_handler = AdaptiveFSHandler()
+    event_handler = AdaptiveFSHandler(base_dir=path_to_watch)
     observer = Observer()
     observer.schedule(event_handler, path=path_to_watch, recursive=True)
     observer.start()
