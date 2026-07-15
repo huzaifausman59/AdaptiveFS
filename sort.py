@@ -16,6 +16,7 @@ def resolve_destination(file_path: str, base_dir: str) -> str:
     """
     filename = os.path.basename(file_path)
     category = get_category(filename)
+    
     dest_dir = os.path.join(base_dir, category)
     return os.path.join(dest_dir, filename)
 
@@ -62,6 +63,10 @@ def sort_file(file_path: str, base_dir: str) -> str:
     """
     
     dest_path = resolve_destination(file_path, base_dir)
+
+    if os.path.dirname(file_path) == os.path.dirname(dest_path):
+        return file_path
+
     dest_path = avoid_collision(dest_path)
     final_path = move_file(file_path, dest_path)
     print(f"[SORTED] {os.path.basename(final_path)} -> {os.path.dirname(final_path)}/")
