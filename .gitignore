@@ -13,6 +13,9 @@ build/
 
 H:\University Data\FYP\AdaptiveFS\TestFolder/
 
+# Tests
+test_folder/
+
 # Logs
 *.log
 *.csv

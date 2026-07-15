@@ -24,12 +24,15 @@ Example .adaptivefsignore:
 import fnmatch
 from pathlib import Path
 
+from extension_rules import load_ignored_extensions, is_ignored_extension
+
 IGNORE_FILENAME = ".adaptivefsignore"
 
 # Permanent built-in exclusions — things that should never be sorted
 # regardless of what the user's ignore file says.
 DEFAULT_IGNORE_PATTERNS = [
     ".adaptivefsignore",
+    ".adaptivefsignore_ext",
     "*.tmp",
     "*.crdownload",
     "*.part",
@@ -60,22 +63,39 @@ def load_ignore_patterns(watched_folder: str) -> list[str]:
     return patterns
 
 
-def should_ignore(filepath: str, patterns: list[str]) -> bool:
+def load_ignore_config(watched_folder: str) -> dict:
     """
-    Returns True if the filename at `filepath` matches any of the given
-    glob patterns. Matches against the filename only, not the full path,
-    so patterns stay simple regardless of folder depth.
+    Convenience loader that pulls together both ignore checks' config
+    in one call: glob patterns (.adaptivefsignore) and ignored
+    extensions (.adaptivefsignore_ext). Callers pass the returned dict
+    straight into should_ignore().
+    """
+    return {
+        "patterns": load_ignore_patterns(watched_folder),
+        "extensions": load_ignored_extensions(watched_folder),
+    }
 
-    Also ignores anything living inside the category folders themselves
-    (Code/, Documents/, Images/, etc.) so already-sorted files or files
-    being moved don't get re-triggered — this is a cheap safeguard until
-    the category folder names are threaded through more formally.
+
+def should_ignore(filepath: str, patterns: list[str], ignored_extensions: set[str] = None) -> bool:
+    """
+    Returns True if the file at `filepath` should be ignored, by either
+    check:
+      - filename matches a glob pattern (e.g. test_*, *.crdownload)
+      - file's extension is in the ignored-extensions set
+
+    Each check is delegated to its own module (glob matching here,
+    extension matching in extension_rules.py) so either can be edited
+    or replaced independently. Matches against the filename only, not
+    the full path, so patterns stay simple regardless of folder depth.
     """
     filename = Path(filepath).name
 
     for pattern in patterns:
         if fnmatch.fnmatch(filename, pattern):
             return True
+
+    if ignored_extensions and is_ignored_extension(filename, ignored_extensions):
+        return True
 
     return False
 

@@ -1,6 +1,7 @@
 import os
 import shutil
 from file_categories import get_category
+from logger import log_action
 
 
 def resolve_destination(file_path: str, base_dir: str) -> str:
@@ -56,12 +57,19 @@ def move_file(src_path: str, dest_path: str) -> str:
     return dest_path
 
 
-def sort_file(file_path: str, base_dir: str) -> str:
+def sort_file(file_path: str, base_dir: str, method: str = "manual") -> str:
     """
     High-level convenience wrapper: resolve where the file goes,
     avoid overwriting anything, then move it.
+
+    method : how this sort was triggered, e.g. "watcher" or "manual".
+             Passed straight through to the actions log so every logged
+             row records who/what initiated the move.
     """
-    
+    if not os.path.isfile(file_path):
+        print(f"[SKIP] Not a file (missing or already moved): {file_path}")
+        return file_path
+
     dest_path = resolve_destination(file_path, base_dir)
 
     if os.path.dirname(file_path) == os.path.dirname(dest_path):
@@ -69,5 +77,8 @@ def sort_file(file_path: str, base_dir: str) -> str:
 
     dest_path = avoid_collision(dest_path)
     final_path = move_file(file_path, dest_path)
+
     print(f"[SORTED] {os.path.basename(final_path)} -> {os.path.dirname(final_path)}/")
+    log_action(original_path=file_path, destination=final_path, method=method)
+
     return final_path
