@@ -72,9 +72,6 @@ python -m venv adaptivefs-env
 
 # Activate on Windows
 adaptivefs-env\Scripts\activate
-
-# Activate on Mac/Linux
-source adaptivefs-env/bin/activate
 ```
 
 ### 3. Install dependencies
@@ -166,4 +163,4 @@ implemented.
 
 - [x] Phase 1: Folder watcher with event logging
 - [x] Phase 2: Extension-based classification, sorting into category folders, ignore rules (glob + extension), manual command control, action logging
-- [ ] Phase 3: Work on extracting Context from files
+- [ ] Phase 3: Work on extracting Context from files (to be done)
