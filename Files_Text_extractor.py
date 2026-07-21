@@ -55,5 +55,6 @@ def extract_image_metadata(image_path):
 
     except Exception as e:
         print(f"Error reading image '{image_path}': {e}")
-        
+
     return metadata
+
