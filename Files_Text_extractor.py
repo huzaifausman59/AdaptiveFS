@@ -95,3 +95,16 @@ def extract_text_file(txt_path):
     except Exception as e:
         log_extraction_error(e, txt_path)
         return None
+
+#*******************code file extraction function****************
+
+def extract_code_text(code_path):
+    try:
+        with open(code_path, "r", encoding="utf-8", errors="ignore") as file:
+            text = file.read()
+
+        return text
+
+    except Exception as e:
+        log_extraction_error(e, code_path)
+        return None
