@@ -29,11 +29,17 @@
 
 # ******************programming language detection test ****************
 
-from Language_Detector import detect_programming_language
+# from Language_Detector import detect_programming_language
 
-file_path = r"C:\Users\aliad\Desktop\sda1\src\main.cpp"      # Change this to your test file
+# file_path = r"C:\Users\aliad\Desktop\sda1\src\main.cpp"      # Change this to your test file
 
-language = detect_programming_language(file_path)
+# language = detect_programming_language(file_path)
 
-print(f"Detected Language: {language}")
+# print(f"Detected Language: {language}")
 
+#*******************text file extraction test ****************
+
+from Files_Text_extractor import extract_text_file
+file_path = r"C:\Users\aliad\Desktop\sda1\src\main.txt"  # Change this to your test file
+text = extract_text_file(file_path)
+print(text)
