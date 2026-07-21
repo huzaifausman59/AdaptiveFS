@@ -1,17 +1,9 @@
 import pdfplumber
+import docx
 
 
 def extract_pdf_text(pdf_path):
-    """
-    Extract text from a PDF file.
-
-    Parameters:
-        pdf_path (str): Path to the PDF file.
-
-    Returns:
-        str: Extracted text.
-    """
-
+    
     extracted_text = ""
 
     with pdfplumber.open(pdf_path) as pdf:
@@ -25,3 +17,14 @@ def extract_pdf_text(pdf_path):
 
     return extracted_text
 
+
+def extract_docx_text(docx_path):
+    
+    document = docx.Document(docx_path)
+
+    extracted_text = ""
+
+    for paragraph in document.paragraphs:
+        extracted_text += paragraph.text + "\n"
+
+    return extracted_text
