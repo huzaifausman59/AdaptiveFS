@@ -164,3 +164,17 @@ implemented.
 - [x] Phase 1: Folder watcher with event logging
 - [x] Phase 2: Extension-based classification, sorting into category folders, ignore rules (glob + extension), manual command control, action logging
 - [ ] Phase 3: Work on extracting Context from files (to be done)
+---
+
+## Phase 3: classifier, tests and experiments
+
+```bash
+pip install -r requirements.txt
+pytest                         # unit tests
+python build_dataset.py        # dataset/<Category>/ -> dataset.csv
+python -m experiments.e1       # E1: content classifier vs extension baseline + model comparison
+python -m experiments.e2_e3    # E2 calibration, E3 confidence gate
+python train_model.py          # saves model.joblib for the watcher
+python watcher.py ./test_folder          # prints decisions only
+python watcher.py ./test_folder --auto   # moves files (confident -> category, unsure -> _Review)
+```

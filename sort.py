@@ -4,19 +4,21 @@ from file_categories import get_category
 from logger import log_action
 
 
-def resolve_destination(file_path: str, base_dir: str) -> str:
+def resolve_destination(file_path: str, base_dir: str, category: str = None) -> str:
     """
     Decide where a file should end up, based on its category.
     Pure logic — no filesystem writes happen here.
 
     file_path : full path to the file being classified
+    category  : optional category chosen by the content classifier; falls back
+                to the extension-based category when None
     base_dir  : root folder being organized (category folders live here)
 
     Returns the full destination file path (folder + filename),
     without checking for collisions or creating anything.
     """
     filename = os.path.basename(file_path)
-    category = get_category(filename)
+    category = category or get_category(filename)
     
     dest_dir = os.path.join(base_dir, category)
     return os.path.join(dest_dir, filename)
@@ -57,7 +59,7 @@ def move_file(src_path: str, dest_path: str) -> str:
     return dest_path
 
 
-def sort_file(file_path: str, base_dir: str, method: str = "manual") -> str:
+def sort_file(file_path: str, base_dir: str, method: str = "manual", category: str = None) -> str:
     """
     High-level convenience wrapper: resolve where the file goes,
     avoid overwriting anything, then move it.
@@ -70,7 +72,7 @@ def sort_file(file_path: str, base_dir: str, method: str = "manual") -> str:
         print(f"[SKIP] Not a file (missing or already moved): {file_path}")
         return file_path
 
-    dest_path = resolve_destination(file_path, base_dir)
+    dest_path = resolve_destination(file_path, base_dir, category)
 
     if os.path.dirname(file_path) == os.path.dirname(dest_path):
         return file_path

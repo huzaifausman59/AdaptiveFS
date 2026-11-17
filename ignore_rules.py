@@ -37,6 +37,7 @@ DEFAULT_IGNORE_PATTERNS = [
     "*.crdownload",
     "*.part",
     "*.swp",
+    "~$*",
     "desktop.ini",
     ".DS_Store",
     "Thumbs.db",

@@ -23,3 +23,6 @@ test_folder/
 # OS files
 .DS_Store
 Thumbs.db
+# Keep experiment outputs
+!results/*.csv
+*.joblib

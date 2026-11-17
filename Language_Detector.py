@@ -1,4 +1,5 @@
 import os
+import re
 KEYWORD_HINTS = {
     "Python": [
         "def ", "from ", "import ", "__name__", "__main__",
@@ -148,6 +149,14 @@ EXTENSION_MAP ={
     "ipynb": "Python"
 }
 
+def _has_keyword(keyword, content):
+    """Whole-word match for plain words (so 'end' doesn't match 'endpoint');
+    substring match for keywords containing symbols (e.g. 'console.log', '=>')."""
+    kw = keyword.lower().strip()
+    if kw.isalpha():
+        return re.search(r"\b" + re.escape(kw) + r"\b", content) is not None
+    return keyword.lower() in content
+
 def detect_programming_language(file_path):
     """
     Detect the programming language of a source code file using
@@ -172,7 +181,7 @@ def detect_programming_language(file_path):
     # Extension known — verify with at least 1 matching keyword
     if extension_language:
         keywords = KEYWORD_HINTS.get(extension_language, [])
-        if any(keyword.lower() in content for keyword in keywords):
+        if any(_has_keyword(keyword, content) for keyword in keywords):
             return extension_language
 
     # Extension unknown, or its keyword check failed — score everything
@@ -180,7 +189,7 @@ def detect_programming_language(file_path):
     highest_score = 0
 
     for language, keywords in KEYWORD_HINTS.items():
-        score = sum(1 for keyword in keywords if keyword.lower() in content)
+        score = sum(1 for keyword in keywords if _has_keyword(keyword, content))
         if score > highest_score:
             highest_score = score
             best_language = language
