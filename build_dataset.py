@@ -15,7 +15,12 @@ for label in sorted(os.listdir(ROOT)):
         continue
     for name in sorted(os.listdir(folder)):
         path = os.path.join(folder, name)
-        text, has_content = build_text(path)
+        print(f"[{len(rows) + 1}] {path}", flush=True)
+        try:
+            text, has_content = build_text(path)
+        except Exception as e:  # one bad file must not stop the build
+            print(f"  skipped content ({type(e).__name__}: {e})")
+            text, has_content = "", False
         rows.append(dict(path=path, label=label, ext=os.path.splitext(name)[1].lower(),
                          text=text, has_content=has_content))
 

@@ -5,6 +5,8 @@ import docx
 from PIL import Image
 from PIL.ExifTags import TAGS
 
+MAX_PDF_PAGES = 5  # the first pages are enough to classify a file, and it keeps extraction 
+MAX_SLIDES = 20
 #*******************logging configuration****************
 logging.basicConfig(
     filename="extraction_errors.log",
@@ -27,7 +29,7 @@ def extract_pdf_text(pdf_path):
     try:
         with pdfplumber.open(pdf_path) as pdf:
 
-            for page in pdf.pages:
+            for page in pdf.pages[:MAX_PDF_PAGES]:
 
                 page_text = page.extract_text()
 
@@ -108,3 +110,24 @@ def extract_code_text(code_path):
     except Exception as e:
         log_extraction_error(e, code_path)
         return None
+
+# ******************PowerPoint extraction function****************
+
+def extract_pptx_text(pptx_path):
+
+    extracted_text = ""
+
+    try:
+        from pptx import Presentation
+
+        for slide in list(Presentation(pptx_path).slides)[:MAX_SLIDES]:
+            for shape in slide.shapes:
+                if shape.has_text_frame:
+                    extracted_text += shape.text_frame.text + "\n"
+
+    except Exception as e:
+        print(f"Error reading PowerPoint '{pptx_path}': {e}")
+        log_extraction_error(e, pptx_path)
+        return ""
+
+    return extracted_text

@@ -28,3 +28,17 @@ def test_max_chars(tmp_path):
 def test_unknown_extension(tmp_path):
     f = tmp_path / "data.xyz"; f.write_text("abc")
     assert build_text(str(f)) == ("data ext_xyz ", False)
+
+
+def test_generic_doc_names_carry_no_tokens(tmp_path):
+    f = tmp_path / "doc_012.txt"; f.write_text("hello world " * 5)
+    assert "doc" not in build_text(str(f))[0].split()
+
+def test_pptx_text_is_extracted(tmp_path):
+    from pptx import Presentation
+    prs = Presentation(); s = prs.slides.add_slide(prs.slide_layouts[1])
+    s.shapes.title.text = "Neural network training basics"
+    s.placeholders[1].text = "Backpropagation updates the weights of every layer"
+    f = tmp_path / "lec.pptx"; prs.save(str(f))
+    text, ok = build_text(str(f))
+    assert ok and "Backpropagation" in text

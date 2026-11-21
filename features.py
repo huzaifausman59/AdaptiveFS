@@ -4,7 +4,7 @@ import re
 
 from file_categories import get_category
 from Files_Text_extractor import (
-    extract_pdf_text, extract_docx_text, extract_text_file, extract_code_text,
+    extract_pdf_text, extract_docx_text, extract_pptx_text, extract_text_file, extract_code_text,
 )
 
 
@@ -20,12 +20,15 @@ def build_text(path, max_chars=20000):
         body = extract_pdf_text(path)
     elif ext == ".docx":
         body = extract_docx_text(path)
+    elif ext == ".pptx":
+        body = extract_pptx_text(path)
     elif ext in (".txt", ".md"):
         body = extract_text_file(path)
     elif get_category(path) == "Code":
         body = extract_code_text(path)
     else:
         body = ""
-    name = re.sub(r"[_\-.\d]+", " ", os.path.splitext(os.path.basename(path))[0])
+    stem = os.path.splitext(os.path.basename(path))[0]
+    name = "" if re.fullmatch(r"doc[_ ]?\d+", stem, re.I) else re.sub(r"[_\-.\d]+", " ", stem)  # placeholder names carry no information
     text = f"{name} ext_{ext.lstrip('.')} {body or ''}"[:max_chars]
     return text, len((body or "").strip()) >= MIN_CONTENT_CHARS
